@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { HTMLInputTypeAttribute } from 'svelte/elements';
 
-	export let type: HTMLInputTypeAttribute = 'text';
+	export let type: HTMLInputTypeAttribute | 'textarea' = 'text';
 	export let inputLabel: string;
 	export let placeholder: string;
 	export let name: string;
@@ -10,7 +10,11 @@
 
 <div>
 	<label for={uuid}>{inputLabel}</label>
-	<input {type} {name} {placeholder} id={uuid} />
+	{#if type === 'textarea'}
+		<textarea {name} id={uuid} cols="30" rows="10" />
+	{:else}
+		<input {type} {name} {placeholder} id={uuid} />
+	{/if}
 </div>
 
 <style>
@@ -19,7 +23,8 @@
 		margin-bottom: 0.5rem;
 		display: block;
 	}
-	input {
+	input,
+	textarea {
 		width: 100%;
 		margin-bottom: 1.5rem;
 		border: 1px solid #e2e8f0;
