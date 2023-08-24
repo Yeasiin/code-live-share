@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "strict": true,
+    "lib": ["ESNext"],
+    "esModuleInterop": true,
+    "declaration": true,
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "ts-node": {
+    "swc": true
+  },
+  "include": ["./src/**/*.ts"]
+}
