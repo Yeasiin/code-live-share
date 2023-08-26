@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const envVariable = z.object({
   PORT: z.string(),
+  NODE_ENV: z.string(),
 });
 
 envVariable.parse(process.env);
