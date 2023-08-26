@@ -5,6 +5,8 @@ import AppError from "../utils/appError";
 function handleZodValidationError(err: any, req: Request, res: Response) {
   const zodError = err.flatten().fieldErrors;
 
+  console.log(err.flatten());
+
   res.status(StatusCodes.BAD_REQUEST).json({
     status: "failed",
     message: zodError,
@@ -59,6 +61,8 @@ export function globalErrorHandler(
   err.status = err.status || "failed";
 
   if (process.env.NODE_ENV === "development") {
+    if (err.name === "ZodError") return handleZodValidationError(err, req, res);
+
     sendErrorOnDevelopment(err, req, res);
   } else if (process.env.NODE_ENV === "production") {
     let error = { ...err };

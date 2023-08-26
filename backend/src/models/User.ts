@@ -40,7 +40,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       select: false,
     },
-    isVerified: { type: Boolean, default: false },
+    isVerified: { type: Boolean, default: false, select: false },
     verificationToken: { type: String, select: false },
     verified: Date,
     role: {
@@ -51,21 +51,22 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
+    methods: {
+      isPasswordMatch: function (candidate: string) {
+        if (!this.password) return false;
+        return bcrypt.compare(candidate, this.password);
+      },
+    },
   }
 );
 
-userSchema.methods.isPasswordMatch = async function (candidate: string) {
-  return bcrypt.compare(candidate, this.password);
-};
-
 userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
-    return next();
+  if (!this.isModified("password")) next();
+  const salt = await bcrypt.genSalt(10);
+  if (this.password) {
+    this.password = await bcrypt.hash(this.password, salt);
   }
-  console.log(this);
   next();
-  // const salt = await bcrypt.genSalt(10);
-  // this.password = await bcrypt.hash(this.password, salt);
 });
 
 const User = mongoose.model("User", userSchema);

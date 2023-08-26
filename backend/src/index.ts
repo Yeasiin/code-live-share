@@ -1,36 +1,36 @@
-import express, { NextFunction, RequestHandler } from "express";
+import express from "express";
 import morgan from "morgan";
 import "express-async-errors";
 import { config } from "dotenv";
-import User from "./models/User";
+import multer from "multer";
+import authRouter from "./routes/authRoute";
 import {
   globalErrorHandler,
   routeNotFound,
-} from "./controllers/errorConroller";
+} from "./controllers/errorController";
+import DBConnect from "./utils/dbUtils";
 config();
 
 const app = express();
 
+// log
 app.use(morgan("dev"));
 
-app.get("/", async (req, res) => {
-  const result = await User.create({
-    firstName: "yeasin",
-    lastName: "arfat",
-    email: "mail@mail.com",
-    password: "123123",
-  });
+// app middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-  console.log(result);
+// database connection
+DBConnect(process.env.MONGO_URI);
 
-  res.json({
-    message: "hello",
-  });
-});
+// route
+app.use("/api/v1/auth", authRouter);
 
+// error handling
 app.use(routeNotFound);
 app.use(globalErrorHandler);
 
 const PORT = (process.env.PORT || 5000) as number;
 
-app.listen(PORT, () => console.log("port 5000"));
+// listing the server aka spinning the server
+app.listen(PORT, () => console.log(`localhost:${PORT}`));
