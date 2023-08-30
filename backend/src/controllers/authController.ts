@@ -5,13 +5,18 @@ import User from "../models/User";
 import { generateToken } from "../utils/jwtUtils";
 import AppError from "../utils/appError";
 
-const registerSchema = z.object({
-  firstName: z.string(),
-  lastName: z.string(),
-  email: z.string().email().toLowerCase(),
-  password: z.string().min(6, "Password must be at least 6 character"),
-});
-
+const registerSchema = z
+  .object({
+    firstName: z.string(),
+    lastName: z.string(),
+    email: z.string().email().toLowerCase(),
+    password: z.string().min(6, "Password must be at least 6 character"),
+    confirmPassword: z.string().min(6),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Password don't match",
+    path: ["confirmPassword"],
+  });
 async function register(req: Request, res: Response) {
   const registerData = registerSchema.parse(req.body);
 
@@ -71,8 +76,26 @@ async function getProfile(req: Request, res: Response) {
     data: user,
   });
 }
-function updateProfile(req: Request, res: Response) {
-  res.send("update profile");
+
+const updateSchema = z.object({
+  firstName: z.string().optional(),
+  lastName: z.string().optional(),
+  email: z.string().email().toLowerCase().optional(),
+});
+
+async function updateProfile(req: Request, res: Response) {
+  const updateValue = updateSchema.parse(req.body);
+
+  const user = await User.findByIdAndUpdate(req.user.id, updateValue, {
+    new: true,
+  });
+
+  console.log(user, updateValue);
+
+  res.status(StatusCodes.OK).json({
+    status: "success",
+    data: user,
+  });
 }
 
 export default { register, login, getProfile, updateProfile };
