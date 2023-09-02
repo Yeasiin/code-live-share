@@ -5,6 +5,16 @@ const envVariable = z.object({
   NODE_ENV: z.string(),
   MONGO_URI: z.string(),
   JWT_SECRET: z.string(),
+  MY_MAIL: z.string(),
+  MAIL_HOST: z.string(),
+  MAIL_PORT: z.string(),
+  MAIL_USER: z.string(),
+  MAIL_PASSWORD: z.string(),
+  //
+  BREVO_HOST: z.string(),
+  BREVO_PORT: z.string(),
+  BREVO_USER: z.string(),
+  BREVO_PASSWORD: z.string(),
 });
 
 envVariable.parse(process.env);

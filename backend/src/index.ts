@@ -2,13 +2,13 @@ import express from "express";
 import morgan from "morgan";
 import "express-async-errors";
 import { config } from "dotenv";
-import multer from "multer";
 import authRouter from "./routes/authRoute";
 import {
   globalErrorHandler,
   routeNotFound,
 } from "./controllers/errorController";
 import DBConnect from "./utils/dbUtils";
+import utilRoute from "./routes/utilRoute";
 config();
 
 const app = express();
@@ -25,6 +25,7 @@ DBConnect(process.env.MONGO_URI);
 
 // route
 app.use("/api/v1/auth", authRouter);
+app.use("/api/v1/util", utilRoute);
 
 // error handling
 app.use(routeNotFound);

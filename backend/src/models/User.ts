@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 import bcrypt from "bcryptjs";
 import { z } from "zod";
 
@@ -70,5 +70,7 @@ userSchema.pre("save", async function (next) {
 });
 
 const User = mongoose.model("User", userSchema);
+
+type User = InferSchemaType<typeof userSchema>;
 
 export default User;
