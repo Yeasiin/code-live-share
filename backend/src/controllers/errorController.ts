@@ -1,15 +1,22 @@
 import { NextFunction, Request, Response } from "express";
 import { StatusCodes } from "http-status-codes";
 import AppError from "../utils/appError";
+import { ZodError } from "zod";
+import { formatZodError } from "./../utils/utils";
+import { customErrorMap } from "../utils/zodErrorMap";
 
-function handleZodValidationError(err: any, req: Request, res: Response) {
-  const zodError = err.flatten().fieldErrors;
+function handleZodValidationError(err: AppError, req: Request, res: Response) {
+  const zodError = err as unknown as ZodError;
+  zodError;
+  const initErrors = {};
 
-  console.log(err.flatten());
+  zodError.issues.map((issues) =>
+    formatZodError(initErrors, issues.path, issues.message)
+  );
 
   res.status(StatusCodes.BAD_REQUEST).json({
-    status: "failed",
-    message: zodError,
+    success: false,
+    errors: initErrors,
   });
 }
 

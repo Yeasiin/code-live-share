@@ -1,0 +1,14 @@
+{
+  "name": "live-editor",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/Yeasiin/code-live-share.git",
+  "author": "Yeasin Arfat <yeasinarfatemon12345@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "server": "cd backend && yarn run dev --prefix server",
+    "client": "cd frontend && yarn run dev",
+    "dev": "concurrently \"yarn run server\" \"yarn run client\"  "
+  },
+  "dependencies": {}
+}

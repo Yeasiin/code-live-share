@@ -6,7 +6,7 @@ import { Request, Response } from "express";
 const contactSchema = z.object({
   fullName: z.string(),
   email: z.string().email(),
-  message: z.string().min(5, "Message Should be at least 5 character long"),
+  message: z.string().min(5),
 });
 
 export async function contactMail(req: Request, res: Response) {
@@ -26,5 +26,10 @@ export async function contactMail(req: Request, res: Response) {
   // by awaiting server take time and then send the response to the client
   await mail.receiveContact();
 
-  res.status(StatusCodes.OK).json({ status: "success" });
+  res.status(StatusCodes.OK).json({
+    success: true,
+    data: {
+      message: "We Received Your Mail, We Will Get Back Soon",
+    },
+  });
 }

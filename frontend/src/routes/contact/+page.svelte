@@ -1,6 +1,5 @@
 <script>
-	import Button from '$lib/components/common/Button.svelte';
-	import Input from '$lib/components/common/Input.svelte';
+	import ContactForm from '$lib/components/ContactForm.svelte';
 </script>
 
 <svelte:head>
@@ -12,13 +11,7 @@
 	<div class="container">
 		<div class="contactus">
 			<h3 class="contactus__heading">Contact us</h3>
-
-			<form class="contact__form">
-				<Input inputLabel="Email" name="email" placeholder="Your Email address" />
-				<Input inputLabel="Subject" name="subject" placeholder="Enter Subject" />
-				<Input type="textarea" inputLabel="message" name="message" placeholder="Enter Subject" />
-				<Button>Send</Button>
-			</form>
+			<ContactForm />
 		</div>
 	</div>
 </section>
@@ -31,11 +24,5 @@
 		text-align: center;
 		font-size: 2.5rem;
 		margin-bottom: 2rem;
-	}
-
-	.contact__form {
-		margin-inline: auto;
-		width: 100%;
-		max-width: 50rem;
 	}
 </style>

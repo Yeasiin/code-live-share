@@ -1,7 +1,9 @@
+require("dotenv").config();
 import express from "express";
 import morgan from "morgan";
+import cors from "cors";
+import { z } from "zod";
 import "express-async-errors";
-import { config } from "dotenv";
 import authRouter from "./routes/authRoute";
 import {
   globalErrorHandler,
@@ -9,12 +11,16 @@ import {
 } from "./controllers/errorController";
 import DBConnect from "./utils/dbUtils";
 import utilRoute from "./routes/utilRoute";
-config();
-
+import "zodsimpleerror";
+// error map
+// z.setErrorMap(customErrorMap);
 const app = express();
 
 // log
 app.use(morgan("dev"));
+
+// cors
+app.use(cors());
 
 // app middleware
 app.use(express.urlencoded({ extended: true }));
@@ -34,4 +40,8 @@ app.use(globalErrorHandler);
 const PORT = (process.env.PORT || 5000) as number;
 
 // listing the server aka spinning the server
-app.listen(PORT, () => console.log(`localhost:${PORT}`));
+app.listen(PORT, () =>
+  console.log(
+    `server running ${process.env.NODE_ENV} Mode on localhost:${PORT}`
+  )
+);

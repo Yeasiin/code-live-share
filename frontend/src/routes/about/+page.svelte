@@ -1,6 +1,10 @@
 <script>
-	import HeroArea from '$lib/components/HeroArea.svelte';
 </script>
+
+<svelte:head>
+	<title>About us</title>
+	<meta name="description" content="It's and pet project" />
+</svelte:head>
 
 <section>
 	<div class="container">

@@ -29,5 +29,11 @@
 		"typescript": "^5.0.0",
 		"vite": "^4.4.2"
 	},
-	"type": "module"
+	"type": "module",
+	"dependencies": {
+		"@hyper-fetch/core": "^5.7.1",
+		"svelte-forms-lib": "^2.0.1",
+		"yup": "^1.2.0",
+		"zod": "^3.22.2"
+	}
 }

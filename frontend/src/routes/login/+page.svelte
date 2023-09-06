@@ -1,6 +1,21 @@
 <script>
 	import Button from '$lib/components/common/Button.svelte';
 	import Input from '$lib/components/common/Input.svelte';
+	import { createForm } from 'svelte-forms-lib';
+
+	const { form, errors, handleChange, handleSubmit } = createForm({
+		initialValues: {
+			email: '',
+			fullName: '',
+			message: ''
+		},
+
+		onSubmit: (value) => {
+			console.log('famil');
+			alert(JSON.stringify(value));
+			return null;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -14,11 +29,25 @@
 			<p class="login__heading">Login into your account</p>
 			<div class="login__form">
 				<form class="" action="" method="post">
-					<Input type="email" name="email" inputLabel="Email Address" placeholder="Email Address" />
-					<Input inputLabel="Password" name="password" type="password" placeholder="Password" />
+					<Input
+						type="email"
+						errors={$errors}
+						{handleChange}
+						name="email"
+						inputLabel="Email Address"
+						placeholder="Email Address"
+					/>
+					<Input
+						errors={$errors}
+						{handleChange}
+						inputLabel="Password"
+						name="password"
+						type="password"
+						placeholder="Password"
+					/>
 
 					<p class="forgot">Forgot Password?</p>
-					<Button>Login</Button>
+					<Button type="submit">Login</Button>
 				</form>
 			</div>
 		</div>

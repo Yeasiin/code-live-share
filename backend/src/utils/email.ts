@@ -20,7 +20,6 @@ export default class Email {
       return nodemailer.createTransport({
         host: process.env.BREVO_HOST,
         port: +process.env.BREVO_PORT,
-        // secure: true,
         auth: {
           user: process.env.BREVO_USER,
           pass: process.env.BREVO_PASSWORD,
@@ -44,14 +43,12 @@ export default class Email {
     subject: string;
     text: string;
   }) {
-    //TODO: try catch
     try {
       await this._newTransport().sendMail(mailOptions);
-      console.log("successfully delivered email");
     } catch (error) {
       throw new AppError(
         "Failed to deliver Email",
-        StatusCodes.EXPECTATION_FAILED
+        StatusCodes.FAILED_DEPENDENCY
       );
     }
   }

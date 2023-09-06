@@ -1,6 +1,21 @@
 <script>
 	import Button from '$lib/components/common/Button.svelte';
 	import Input from '$lib/components/common/Input.svelte';
+	import { createForm } from 'svelte-forms-lib';
+
+	const { form, errors, handleChange, handleSubmit } = createForm({
+		initialValues: {
+			email: '',
+			fullName: '',
+			message: ''
+		},
+
+		onSubmit: (value) => {
+			console.log('famil');
+			alert(JSON.stringify(value));
+			return null;
+		}
+	});
 </script>
 
 <svelte:head>
@@ -14,12 +29,38 @@
 			<div class="register__heading">Register a account before login</div>
 			<div class="register__form">
 				<form action="" method="post">
-					<Input name="firstName" inputLabel="First Name" placeholder="First Name" />
-					<Input name="lastName" inputLabel="Last Name" placeholder="Last Name" />
-					<Input name="email" type="email" inputLabel="Email Address" placeholder="Email Address" />
-					<Input name="password" type="password" inputLabel="Password" placeholder="Password" />
+					<Input
+						errors={$errors}
+						{handleChange}
+						name="firstName"
+						inputLabel="First Name"
+						placeholder="First Name"
+					/>
+					<Input
+						errors={$errors}
+						{handleChange}
+						name="lastName"
+						inputLabel="Last Name"
+						placeholder="Last Name"
+					/>
+					<Input
+						errors={$errors}
+						{handleChange}
+						name="email"
+						type="email"
+						inputLabel="Email Address"
+						placeholder="Email Address"
+					/>
+					<Input
+						errors={$errors}
+						{handleChange}
+						name="password"
+						type="password"
+						inputLabel="Password"
+						placeholder="Password"
+					/>
 
-					<Button>Register</Button>
+					<Button type="submit">Register</Button>
 				</form>
 			</div>
 		</div>

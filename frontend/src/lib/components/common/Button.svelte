@@ -1,4 +1,8 @@
-<button> <slot /></button>
+<script lang="ts">
+	export let type: 'button' | 'submit' | 'reset' | null | undefined;
+</script>
+
+<button {type}> <slot /></button>
 
 <style>
 	button {
