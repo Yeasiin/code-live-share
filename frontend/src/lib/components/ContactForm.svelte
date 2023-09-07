@@ -1,23 +1,22 @@
 <script lang="ts">
-	export const ssr = false;
+	import { fly } from 'svelte/transition';
 	import * as yup from 'yup';
 	import { createForm } from 'svelte-forms-lib';
 	import Button from './common/Button.svelte';
 	import Input from './common/Input.svelte';
 	import { baseUrl } from '$lib/utils/apiEndPoints';
+	import { useMutation } from '$lib/api';
 
-	function sendMail(value: { email: string; fullName: string; message: string }) {
-		console.log(value, 'send mail', `${baseUrl}v1/util/contact`);
-		const result = fetch(`${baseUrl}v1/util/contact`, {
-			method: 'POST',
-			body: JSON.stringify(value)
-		}).then((data) => data.json);
+	const [mutateMail, data] = useMutation({
+		endPoint: `${baseUrl}v1/util/contact`,
+		method: 'POST'
+	});
 
-		console.log(result);
-		return result;
+	async function sendMail(value: { email: string; fullName: string; message: string }) {
+		await mutateMail(value);
 	}
 
-	const { form, errors, handleChange, handleSubmit } = createForm({
+	const { form, errors, handleChange, handleSubmit, handleReset } = createForm({
 		initialValues: {
 			fullName: '',
 			email: '',
@@ -29,42 +28,63 @@
 			message: yup.string().min(5, 'Message is too short').required()
 		}),
 		onSubmit: async (value) => {
-			console.log(value);
-
-			sendMail(value);
-
-			// const { success, data } = await sendContactMail.send({ data: value });
-			// console.log({ data, success });
-			return;
+			await sendMail(value);
+			handleReset();
 		}
 	});
 </script>
 
 <form class="contact__form" on:submit={handleSubmit}>
+	{#if $data.isError}
+		<div class="error_msg" style="margin-bottom:1rem;text-transform:capitalize">
+			{$data?.error?.message}
+		</div>
+	{/if}
+
+	{#if $data.isSuccess}
+		<div
+			transition:fly={{
+				opacity: 0.5,
+				y: 50,
+				duration: 3
+			}}
+			class="success__msg"
+		>
+			Thank You for Contacting Us, We have received your email
+		</div>
+	{/if}
+
 	<Input
+		value={$form.fullName}
 		inputLabel="Full Name"
 		{handleChange}
 		name="fullName"
 		placeholder="Enter Full name"
 		error={$errors.fullName}
+		serverError={$data?.error?.errors?.fullName}
 	/>
 	<Input
+		value={$form.email}
 		inputLabel="Email"
 		name="email"
 		{handleChange}
 		placeholder="Your Email address"
 		error={$errors.email}
+		serverError={$data?.error?.errors?.email}
 	/>
 
 	<Input
+		value={$form.message}
 		type="textarea"
 		inputLabel="Message"
 		name="message"
 		{handleChange}
 		placeholder=""
 		error={$errors.message}
+		serverError={$data?.error?.errors?.message}
 	/>
-	<Button type={'submit'}>Send</Button>
+
+	<Button type={'submit'} isLoading={$data.isLoading}>Send</Button>
 </form>
 
 <style>
@@ -72,5 +92,9 @@
 		margin-inline: auto;
 		width: 100%;
 		max-width: 50rem;
+	}
+	.success__msg {
+		text-align: center;
+		margin-block: 1rem;
 	}
 </style>

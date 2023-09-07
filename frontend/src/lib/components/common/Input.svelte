@@ -3,6 +3,8 @@
 
 	export let type: HTMLInputTypeAttribute | 'textarea' = 'text';
 	export let handleChange: KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>;
+	export let value: string;
+	export let serverError: string | undefined;
 	export let inputLabel: string;
 	export let placeholder: string;
 	export let name: string;
@@ -14,12 +16,16 @@
 	<label for={uuid}>{inputLabel}</label>
 	<div class="inputGroup">
 		{#if type === 'textarea'}
-			<textarea on:keyup={handleChange} {name} id={uuid} cols="30" rows="10" />
+			<textarea {value} on:keyup={handleChange} {name} id={uuid} cols="30" rows="10" />
 		{:else}
-			<input on:keyup={handleChange} {type} {name} {placeholder} id={uuid} />
+			<input {value} on:keyup={handleChange} {type} {name} {placeholder} id={uuid} />
+		{/if}
+
+		{#if serverError}
+			<small class="error_msg">{serverError}</small>
 		{/if}
 		{#if error}
-			<small class="error">{error}</small>
+			<small class="error_msg">{error}</small>
 		{/if}
 	</div>
 </div>
@@ -40,9 +46,5 @@
 	}
 	.inputGroup {
 		margin-bottom: 1.5rem;
-	}
-	small.error {
-		text-transform: capitalize;
-		color: #d00d;
 	}
 </style>

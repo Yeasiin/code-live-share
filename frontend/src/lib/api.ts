@@ -9,19 +9,26 @@ type MutationReturn = [
 	(body?: object) => Promise<void>,
 	Writable<{
 		isLoading: boolean;
+		isSuccess: boolean;
 		isError: boolean;
-		error: object | undefined;
+		error: { message: string; errors?: { [key: string]: string } } | undefined;
 		data: object | undefined;
 	}>
 ];
 
 export function useMutation({ endPoint, method = 'GET' }: MutationProps): MutationReturn {
-	const state = { isLoading: false, isSuccess: false, isError: false, error: {}, data: {} };
+	const state = { isLoading: false, isSuccess: false, isError: false, error: undefined, data: {} };
 	const mutationStore = writable(state);
 
 	async function mutation(body: any = {}) {
 		try {
-			mutationStore.update((state) => ({ ...state, isLoading: true, isError: false }));
+			mutationStore.update((state) => ({
+				...state,
+				isLoading: true,
+				isSuccess: false,
+				isError: false,
+				error: undefined
+			}));
 
 			const request = await fetch(endPoint, {
 				method: method,
@@ -38,6 +45,7 @@ export function useMutation({ endPoint, method = 'GET' }: MutationProps): Mutati
 				return mutationStore.update((value) => ({
 					...value,
 					isLoading: false,
+					isSuccess: false,
 					isError: true,
 					error: result
 				}));
@@ -53,8 +61,9 @@ export function useMutation({ endPoint, method = 'GET' }: MutationProps): Mutati
 			mutationStore.update((value) => ({
 				...value,
 				isLoading: false,
+				isSuccess: false,
 				isError: true,
-				error: { message: 'Something went wrong' }
+				error: { message: 'Something went wrong' } as any
 			}));
 		}
 	}

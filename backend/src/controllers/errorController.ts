@@ -3,7 +3,6 @@ import { StatusCodes } from "http-status-codes";
 import AppError from "../utils/appError";
 import { ZodError } from "zod";
 import { formatZodError } from "./../utils/utils";
-import { customErrorMap } from "../utils/zodErrorMap";
 
 function handleZodValidationError(err: AppError, req: Request, res: Response) {
   const zodError = err as unknown as ZodError;
@@ -16,7 +15,9 @@ function handleZodValidationError(err: AppError, req: Request, res: Response) {
 
   res.status(StatusCodes.BAD_REQUEST).json({
     success: false,
+    status: "failed",
     errors: initErrors,
+    message: "Input Validation failed",
   });
 }
 

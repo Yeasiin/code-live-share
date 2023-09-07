@@ -86,3 +86,11 @@ ol {
 	-o-object-fit: cover;
 	object-fit: cover;
 }
+
+.error_msg {
+	color: #dc3545;
+}
+
+.success__msg {
+	color: #28a745;
+}
