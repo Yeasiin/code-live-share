@@ -11,9 +11,10 @@ import {
 } from "./controllers/errorController";
 import DBConnect from "./utils/dbUtils";
 import utilRoute from "./routes/utilRoute";
+
+// maping the error into good error message
 import "zodsimpleerror";
-// error map
-// z.setErrorMap(customErrorMap);
+
 const app = express();
 
 // log

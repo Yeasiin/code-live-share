@@ -5,19 +5,29 @@ type MutationProps = {
 	method?: 'POST' | 'GET' | 'DELETE' | 'PUT' | 'PATCH';
 };
 
-type MutationReturn = [
+type MutationReturn<TData = undefined, TError = undefined> = [
 	(body?: object) => Promise<void>,
 	Writable<{
 		isLoading: boolean;
 		isSuccess: boolean;
 		isError: boolean;
-		error: { message: string; errors?: { [key: string]: string } } | undefined;
-		data: object | undefined;
+		error: TError | undefined;
+		data: TData | undefined;
 	}>
 ];
+type ErrorType = undefined | { message: string; errors?: { [key: string]: string } };
 
-export function useMutation({ endPoint, method = 'GET' }: MutationProps): MutationReturn {
-	const state = { isLoading: false, isSuccess: false, isError: false, error: undefined, data: {} };
+export function useMutation<TData = undefined, TError = ErrorType>({
+	endPoint,
+	method = 'GET'
+}: MutationProps): MutationReturn<TData, TError> {
+	const state = {
+		isLoading: false,
+		isSuccess: false,
+		isError: false,
+		error: undefined,
+		data: undefined
+	};
 	const mutationStore = writable(state);
 
 	async function mutation(body: any = {}) {

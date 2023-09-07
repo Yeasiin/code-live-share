@@ -1,19 +1,33 @@
-<script>
+<script lang="ts">
+	import { fly } from 'svelte/transition';
+	import { createForm } from 'svelte-forms-lib';
+	import { useMutation } from '$lib/api';
 	import Button from '$lib/components/common/Button.svelte';
 	import Input from '$lib/components/common/Input.svelte';
-	import { createForm } from 'svelte-forms-lib';
+	import { baseUrl } from '$lib/utils/apiEndPoints';
 
-	const { form, errors, handleChange, handleSubmit } = createForm({
+	type RequestResponse = {
+		status: string;
+		success: boolean;
+		message: string;
+		data: unknown;
+		token: string;
+	};
+
+	const [login, data] = useMutation<RequestResponse>({
+		endPoint: `${baseUrl}v1/auth/login`,
+		method: 'POST'
+	});
+
+	const { form, errors, handleChange, handleSubmit, handleReset } = createForm({
 		initialValues: {
 			email: '',
-			fullName: '',
-			message: ''
+			password: ''
 		},
 
-		onSubmit: (value) => {
-			console.log('famil');
-			alert(JSON.stringify(value));
-			return null;
+		onSubmit: async (value) => {
+			await login(value);
+			handleReset();
 		}
 	});
 </script>
@@ -28,17 +42,40 @@
 		<div class="container">
 			<p class="login__heading">Login into your account</p>
 			<div class="login__form">
-				<form class="" action="" method="post">
+				<form on:submit={handleSubmit}>
+					{#if $data.isError}
+						<div class="error_msg" style="margin-bottom:1rem;text-transform:capitalize">
+							{$data?.error?.message}
+						</div>
+					{/if}
+
+					{#if $data.isSuccess && $data.data?.success}
+						<div
+							transition:fly={{
+								opacity: 0.5,
+								y: 50,
+								duration: 3
+							}}
+							class="success__msg"
+						>
+							Login Successful, Redirecting...
+						</div>
+					{/if}
+
 					<Input
 						type="email"
-						errors={$errors}
+						value={$form.email}
+						error={$errors.email}
+						serverError={$data.error?.errors?.email}
 						{handleChange}
 						name="email"
 						inputLabel="Email Address"
 						placeholder="Email Address"
 					/>
 					<Input
-						errors={$errors}
+						error={$errors.password}
+						value={$form.password}
+						serverError={$data.error?.errors?.password}
 						{handleChange}
 						inputLabel="Password"
 						name="password"

@@ -34,7 +34,9 @@ async function register(req: Request, res: Response) {
   const token = generateToken({ _id: user.id });
 
   res.status(StatusCodes.CREATED).json({
+    success: true,
     status: "success",
+    message: "Register Successful",
     token,
     data: user,
   });
@@ -62,7 +64,9 @@ async function login(req: Request, res: Response) {
   const token = generateToken({ _id: user.id });
 
   res.status(StatusCodes.OK).json({
+    success: true,
     status: "success",
+    message: "Login successful",
     token,
     data: user,
   });

@@ -1,19 +1,36 @@
-<script>
+<script lang="ts">
+	import { fly } from 'svelte/transition';
+	import { useMutation } from '$lib/api';
 	import Button from '$lib/components/common/Button.svelte';
 	import Input from '$lib/components/common/Input.svelte';
+	import { baseUrl } from '$lib/utils/apiEndPoints';
 	import { createForm } from 'svelte-forms-lib';
 
-	const { form, errors, handleChange, handleSubmit } = createForm({
+	type RequestResponse = {
+		status: string;
+		success: boolean;
+		message: string;
+		data: unknown;
+		token: string;
+	};
+
+	const [registerUser, data] = useMutation<RequestResponse>({
+		endPoint: `${baseUrl}v1/auth/register`,
+		method: 'POST'
+	});
+
+	const { form, errors, handleChange, handleSubmit, handleReset } = createForm({
 		initialValues: {
+			firstName: '',
+			lastName: '',
 			email: '',
-			fullName: '',
-			message: ''
+			password: '',
+			confirmPassword: ''
 		},
 
-		onSubmit: (value) => {
-			console.log('famil');
-			alert(JSON.stringify(value));
-			return null;
+		onSubmit: async (value) => {
+			await registerUser(value);
+			handleReset();
 		}
 	});
 </script>
@@ -28,23 +45,44 @@
 		<div class="container">
 			<div class="register__heading">Register a account before login</div>
 			<div class="register__form">
-				<form action="" method="post">
+				<form on:submit={handleSubmit} method="post">
+					{#if $data.isError}
+						<div class="error_msg" style="margin-bottom:1rem;text-transform:capitalize">
+							{$data?.error?.message}
+						</div>
+					{/if}
+
+					{#if $data.isSuccess && $data.data?.success}
+						<div
+							transition:fly={{
+								opacity: 0.5,
+								y: 50,
+								duration: 3
+							}}
+							class="success__msg"
+						>
+							User Registration Successful
+						</div>
+					{/if}
 					<Input
-						errors={$errors}
+						error={$errors.firstName}
+						value={$form.firstName}
 						{handleChange}
 						name="firstName"
 						inputLabel="First Name"
 						placeholder="First Name"
 					/>
 					<Input
-						errors={$errors}
+						error={$errors.lastName}
+						value={$form.lastName}
 						{handleChange}
 						name="lastName"
 						inputLabel="Last Name"
 						placeholder="Last Name"
 					/>
 					<Input
-						errors={$errors}
+						error={$errors.email}
+						value={$form.email}
 						{handleChange}
 						name="email"
 						type="email"
@@ -52,15 +90,25 @@
 						placeholder="Email Address"
 					/>
 					<Input
-						errors={$errors}
+						error={$errors.password}
+						value={$form.password}
 						{handleChange}
 						name="password"
 						type="password"
 						inputLabel="Password"
 						placeholder="Password"
 					/>
+					<Input
+						error={$errors.confirmPassword}
+						value={$form.confirmPassword}
+						{handleChange}
+						name="confirmPassword"
+						type="password"
+						inputLabel="Confirm Password"
+						placeholder="Confirm Password"
+					/>
 
-					<Button type="submit">Register</Button>
+					<Button isLoading={$data.isLoading} type="submit">Register</Button>
 				</form>
 			</div>
 		</div>
@@ -82,6 +130,7 @@
 	}
 	.register {
 		width: 100%;
+		margin-block: 5rem;
 	}
 	.register__form {
 		background: #fff;

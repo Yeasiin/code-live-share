@@ -4,7 +4,7 @@
 	export let type: HTMLInputTypeAttribute | 'textarea' = 'text';
 	export let handleChange: KeyboardEventHandler<HTMLInputElement | HTMLTextAreaElement>;
 	export let value: string;
-	export let serverError: string | undefined;
+	export let serverError: string | undefined = '';
 	export let inputLabel: string;
 	export let placeholder: string;
 	export let name: string;
