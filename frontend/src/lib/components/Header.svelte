@@ -1,4 +1,10 @@
-<script></script>
+<script>
+	import { user } from '$lib/store/user';
+
+	const handleLogout = () => {
+		user.logOut();
+	};
+</script>
 
 <!-- navigation -->
 <header>
@@ -20,9 +26,16 @@
 				</li>
 			</ul>
 
-			<div class="header__actions">
-				<a href="/register">Signup</a>
-				<a href="/login">Login</a>
+			<div>
+				{#if $user.data?.firstName}
+					hello {$user.data?.firstName}
+					<button on:click={handleLogout} class="logout">Logout</button>
+				{:else}
+					<div class="header__actions">
+						<a href="/register">Signup</a>
+						<a href="/login">Login</a>
+					</div>
+				{/if}
 			</div>
 		</nav>
 	</div>
@@ -51,9 +64,17 @@
 		margin-inline: 1rem;
 		font-weight: 500;
 	}
-
+	.logout {
+		border: 1px solid rgb(45, 104, 158);
+		padding-inline: 1rem;
+		padding-block: 0.4rem;
+		border-radius: 0.4rem;
+		margin-left: 1rem;
+		font-weight: 600;
+	}
 	.header__actions {
 		display: flex;
+		align-items: center;
 		gap: 2rem;
 		font-weight: 600;
 	}

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { user } from '$lib/store/user';
 	import { fly } from 'svelte/transition';
 	import { createForm } from 'svelte-forms-lib';
 	import { useMutation } from '$lib/api';
@@ -26,7 +27,10 @@
 		},
 
 		onSubmit: async (value) => {
-			await login(value);
+			const result = await login(value);
+			if (result.success) {
+				user.loginUser(result);
+			}
 			handleReset();
 		}
 	});

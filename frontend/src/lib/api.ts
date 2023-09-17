@@ -6,7 +6,7 @@ type MutationProps = {
 };
 
 type MutationReturn<TData = undefined, TError = undefined> = [
-	(body?: object) => Promise<void>,
+	(body?: object) => Promise<TData>,
 	Writable<{
 		isLoading: boolean;
 		isSuccess: boolean;
@@ -37,7 +37,8 @@ export function useMutation<TData = undefined, TError = ErrorType>({
 				isLoading: true,
 				isSuccess: false,
 				isError: false,
-				error: undefined
+				error: undefined,
+				data: undefined
 			}));
 
 			const request = await fetch(endPoint, {
@@ -49,7 +50,7 @@ export function useMutation<TData = undefined, TError = ErrorType>({
 			});
 
 			const result = await request.json();
-			console.log({ result, request });
+
 			if (!request.ok) {
 				// failed
 				return mutationStore.update((value) => ({
@@ -67,6 +68,7 @@ export function useMutation<TData = undefined, TError = ErrorType>({
 				isSuccess: true,
 				data: result
 			}));
+			return result;
 		} catch (err) {
 			mutationStore.update((value) => ({
 				...value,
@@ -75,6 +77,7 @@ export function useMutation<TData = undefined, TError = ErrorType>({
 				isError: true,
 				error: { message: 'Something went wrong' } as any
 			}));
+			return err;
 		}
 	}
 

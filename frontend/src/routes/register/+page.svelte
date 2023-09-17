@@ -5,6 +5,7 @@
 	import Input from '$lib/components/common/Input.svelte';
 	import { baseUrl } from '$lib/utils/apiEndPoints';
 	import { createForm } from 'svelte-forms-lib';
+	import { user } from '$lib/store/user';
 
 	type RequestResponse = {
 		status: string;
@@ -29,7 +30,10 @@
 		},
 
 		onSubmit: async (value) => {
-			await registerUser(value);
+			const result = await registerUser(value);
+			if (result.success) {
+				user.loginUser(result);
+			}
 			handleReset();
 		}
 	});
@@ -61,7 +65,7 @@
 							}}
 							class="success__msg"
 						>
-							User Registration Successful
+							User Registration Successful, Redirecting...
 						</div>
 					{/if}
 					<Input

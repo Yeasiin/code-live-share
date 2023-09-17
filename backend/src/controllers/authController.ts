@@ -77,6 +77,7 @@ async function getProfile(req: Request, res: Response) {
 
   res.status(StatusCodes.OK).json({
     status: "success",
+    success: true,
     data: user,
   });
 }
@@ -98,6 +99,7 @@ async function updateProfile(req: Request, res: Response) {
 
   res.status(StatusCodes.OK).json({
     status: "success",
+    success: true,
     data: user,
   });
 }
